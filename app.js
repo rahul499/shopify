@@ -3,7 +3,12 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const passport = require('passport');
+const session = require('express-session');
+const User = require('./models/user');
+const mongoose = require('mongoose');
 
+// require routes
 const indexRouter = require('./routes/index');
 const postsRouter = require('./routes/posts');
 const reviewsRouter = require('./routes/reviews');
@@ -19,6 +24,30 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+
+//connect to database
+const db = "mongodb+srv://shopifyuser:hellorahul@shopify.aoaue.mongodb.net/shopifydata?retryWrites=true&w=majority";
+mongoose.connect(db, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true
+  }
+).then(() => console.log('MongoDB connected...'))
+.catch(err => console.log('Not connected to database.'));
+mongoose.Promise = global.Promise;
+
+
+//Configure passport and session
+app.use(session({
+  secret: 'rahul',
+  resave: false,
+  saveUninitialized: true,
+}))
+passport.use(User.createStrategy());
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+// mount routes
 app.use('/', indexRouter);
 app.use('/posts', postsRouter);
 app.use('/posts/:id/reviews', reviewsRouter);
