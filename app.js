@@ -21,6 +21,8 @@ const app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+//setup public assets directory
+app.use(express.static('public'));
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -29,8 +31,9 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(methodOverride('_method'));
 
+
 //connect to database
-const db = "mongodb+srv://shopifyuser:hellorahul@shopify.aoaue.mongodb.net/shopifydata?retryWrites=true&w=majority";
+const db = "mongodb+srv://shopifyuser:hellorahul@shopify.aoaue.mongodb.net/shopifydatamapbox?retryWrites=true&w=majority";
 mongoose.connect(db, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
