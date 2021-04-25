@@ -15,12 +15,12 @@ module.exports = {
     //Posts Index
     async getPosts(req, res, next) {
         let posts = await Post.find({});
-        res.render('posts/index', { posts });
+        res.render('posts/index', { posts, title: 'Post Index' });
     },
     
     //Posts New
     newPost(req, res, next) {
-        res.render('posts/new');
+        res.render('posts/new', { title: 'New Post'});
     },
 
     // Posts create
@@ -41,6 +41,7 @@ module.exports = {
 		  .send();
        req.body.post.coordinates = response.body.features[0].geometry.coordinates;
        let post = await Post.create(req.body.post);
+       req.session.success = 'Post created Successfully';
        res.redirect(`/posts/${post.id}`);
     },
 
