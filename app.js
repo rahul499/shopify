@@ -64,6 +64,13 @@ passport.deserializeUser(User.deserializeUser());
 
 //title local variables middleware
 app.use(function(req, res, next){
+
+
+req.user = {
+  '_id': '608549687103f2703800eb01',
+  'username': 'sam'
+}
+res.locals.currentUser = req.user;
   res.locals.title = 'Shopify';
   //set success flash messages
   res.locals.success = req.session.success || '';

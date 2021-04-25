@@ -47,8 +47,17 @@ module.exports = {
 
     //Posts show
     async showPost(req, res, next) {
-        let post = await Post.findById(req.params.id);
-        res.render('posts/show', { post });
+        let post = await Post.findById(req.params.id).populate({
+            path:'reviews',
+            options: { sort: { '_id': -1 } },
+            populate: {
+                path: 'author',
+                model: 'User'
+            }
+        });
+        const floorRating = post.calculateAvgRating();
+        let mapBoxToken = process.env.MAPBOX_TOKEN;
+        res.render('posts/show', { post, mapBoxToken, floorRating });
     },
 
     //Get Edit
@@ -123,6 +132,7 @@ module.exports = {
             await cloudinary.v2.uploader.destroy(image.public_id);
         }
         await post.remove();
+        req.session.success = 'Post deleted successfully!';
         res.redirect(`/posts`)
     }
 }
